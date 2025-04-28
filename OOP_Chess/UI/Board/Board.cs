@@ -6,6 +6,11 @@ namespace OOP_Chess
     {
         private Piece[,] grid = new Piece[8, 8];
 
+        public Board()
+        {
+            SetupInitialPosition();
+        }
+
         public Piece GetPiece(Position pos)
         {
             return grid[pos.Row, pos.Col];
@@ -28,8 +33,8 @@ namespace OOP_Chess
             // Set pawns
             for (int col = 0; col < 8; col++)
             {
-                SetPiece(new Position(1, col), new Pawn(true));
-                SetPiece(new Position(6, col), new Pawn(false));
+                SetPiece(new Position(1, col), new Pawn(true));  // White pawns
+                SetPiece(new Position(6, col), new Pawn(false)); // Black pawns
             }
 
             // Set rooks
@@ -57,6 +62,19 @@ namespace OOP_Chess
             // Set kings
             SetPiece(new Position(0, 4), new King(true));
             SetPiece(new Position(7, 4), new King(false));
+        }
+
+        public Piece[,] GetBoardSnapshot()
+        {
+            var snapshot = new Piece[8, 8];
+            for (int row = 0; row < 8; row++)
+            {
+                for (int col = 0; col < 8; col++)
+                {
+                    snapshot[row, col] = grid[row, col];
+                }
+            }
+            return snapshot;
         }
     }
 }

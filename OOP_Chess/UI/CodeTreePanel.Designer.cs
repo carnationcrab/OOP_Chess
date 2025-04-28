@@ -1,6 +1,6 @@
 ﻿namespace OOP_Chess
 {
-    partial class CodeStructurePanel
+    partial class CodeTreePanel
     {
         /// <summary> 
         /// Required designer variable.

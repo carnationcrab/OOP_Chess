@@ -8,7 +8,7 @@ using OOP_Chess;
 
 namespace OOP_Chess
 {
-    public partial class CodeStructurePanel : UserControl
+    public partial class CodeTreePanel : UserControl
     {
         public event Action<string> OnClassSelected;
 
@@ -16,7 +16,7 @@ namespace OOP_Chess
         private Button toggleButton;
         private bool sidebarVisible = true;
 
-        public CodeStructurePanel()
+        public CodeTreePanel()
         {
             InitializeComponent();
             InitializeSidebar();
@@ -30,13 +30,14 @@ namespace OOP_Chess
             this.BackColor = Color.LightGray;
 
             toggleButton = new Button();
-            toggleButton.Text = "Hide Code Structures";
+            toggleButton.Text = "Show Code Structures";
             toggleButton.Size = new Size(200, 30);
             toggleButton.Location = new Point(10, 10);
             toggleButton.Click += ToggleButton_Click;
             this.Controls.Add(toggleButton);
 
             classTreeView = new TreeView();
+            classTreeView.Visible = false;
             classTreeView.Font = new Font(FontFamily.GenericSansSerif, 10);
             classTreeView.Location = new Point(10, 50);
             classTreeView.Size = new Size(300, 600);
