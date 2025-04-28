@@ -1,5 +1,4 @@
-﻿// ===== File: CodeStructurePanel.cs =====
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -128,6 +127,9 @@ namespace OOP_Chess
             var g = e.Graphics;
             var bounds = e.Bounds;
 
+            // Always clear background first to prevent artifacts
+            g.FillRectangle(new SolidBrush(classTreeView.BackColor), bounds);
+
             var regularFont = classTreeView.Font;
             var boldFont = new Font(classTreeView.Font, FontStyle.Bold);
             var typeFont = new Font(classTreeView.Font, FontStyle.Bold);
@@ -149,7 +151,7 @@ namespace OOP_Chess
             {
                 string text = node.Text;
 
-                if (text.Contains(" ")) 
+                if (text.Contains(" "))
                 {
                     var parts = text.Split(new[] { ' ' }, 2);
                     string typePart = parts[0];
@@ -169,7 +171,9 @@ namespace OOP_Chess
                 }
             }
 
-            e.DrawDefault = false; // Skip normal drawing
+            // Ensure we tell Windows we handled drawing manually
+            e.DrawDefault = false;
         }
+
     }
 }

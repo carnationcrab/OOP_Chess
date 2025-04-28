@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\GameMananger.cs" />
+    <Compile Include="Game\GameResult.cs" />
     <Compile Include="Game\TurnManager.cs" />
     <Compile Include="Pieces\Bishop.cs" />
     <Compile Include="UI\Board\Board.cs" />

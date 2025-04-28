@@ -32,6 +32,7 @@ namespace OOP_Chess
             architecturePanel = new CodeTreePanel();
             architecturePanel.Location = new Point(660, 50);
             architecturePanel.Size = new Size(220, 600);
+            architecturePanel.OnClassSelected += OnClassSelected;
             this.Controls.Add(architecturePanel);
         }
 
@@ -40,6 +41,7 @@ namespace OOP_Chess
             gameManager = new GameManager();
             gameManager.TurnChanged += UpdateTurnDisplay;
             gameManager.BoardChanged += RedrawBoard;
+            gameManager.GameEnded += OnGameEnded; // 🔥 Hook up GameEnded
 
             boardPanel = new BoardPanel(gameManager);
             boardPanel.Location = new Point(10, 50);
@@ -61,9 +63,9 @@ namespace OOP_Chess
             else
             {
                 boardPanel.BackColor = Color.Black;
-                turnLabel.Text       = "Black's Turn";
-                turnLabel.BackColor  = Color.White;
-                turnLabel.ForeColor  = Color.Black;
+                turnLabel.Text = "Black's Turn";
+                turnLabel.BackColor = Color.White;
+                turnLabel.ForeColor = Color.Black;
             }
         }
 
@@ -83,5 +85,31 @@ namespace OOP_Chess
                 boardPanel.HighlightClass(className);
             }
         }
+
+        private void OnGameEnded()
+        {
+            var result = gameManager.CurrentResult;
+            string winnerText;
+
+            switch (result.Winner)
+            {
+                case GameWinner.White:
+                    winnerText = "White wins!";
+                    break;
+                case GameWinner.Black:
+                    winnerText = "Black wins!";
+                    break;
+                case GameWinner.Draw:
+                    winnerText = "It's a draw!";
+                    break;
+                default:
+                    winnerText = "Game over!";
+                    break;
+            }
+
+            string message = $"{winnerText}\nReason: {result.Reason}";
+            MessageBox.Show(message, "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
     }
 }
