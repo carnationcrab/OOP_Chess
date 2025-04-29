@@ -8,14 +8,17 @@ namespace OOP_Chess
     public class TurnManager
     {
         /// <summary>
-        /// Gets or sets whether it is white's turn
+        /// Properties
         /// </summary>
+        
         public bool IsWhiteTurn { get; private set; } = true;
 
         /// <summary>
-        /// Event raised when the turn changes
+        /// Events
         /// </summary>
+        
         public event Action TurnChanged;
+
 
         /// <summary>
         /// Advances the turn to the next player

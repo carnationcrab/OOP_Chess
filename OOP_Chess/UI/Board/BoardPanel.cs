@@ -1,8 +1,10 @@
-﻿using System;
+﻿using OOP_Chess.Pieces;
+using OOP_Chess.Game;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace OOP_Chess
+namespace OOP_Chess.UI.Board
 {
     public class BoardPanel : Panel
     {

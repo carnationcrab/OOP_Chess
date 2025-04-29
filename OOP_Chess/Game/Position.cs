@@ -6,13 +6,10 @@ namespace OOP_Chess
     public class Position
     {
         /// <summary>
-        /// Gets or sets the row (0-7)
+        /// Properties
         /// </summary>
+        
         public int Row { get; set; }
-
-        /// <summary>
-        /// Gets or sets the column (0-7)
-        /// </summary>
         public int Col { get; set; }
 
         /// <summary>

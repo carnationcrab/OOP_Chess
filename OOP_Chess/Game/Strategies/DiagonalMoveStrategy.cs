@@ -1,6 +1,7 @@
 using System;
+using OOP_Chess.Game;
 
-namespace OOP_Chess
+namespace OOP_Chess.Game.Strategies
 {
     /// <summary>
     /// Strategy for diagonal movement
@@ -25,8 +26,8 @@ namespace OOP_Chess
                 return false;
 
             // Check if the path is clear
-            int rowStep = (to.Row - from.Row) / rowDiff;
-            int colStep = (to.Col - from.Col) / colDiff;
+            int rowStep = rowDiff == 0 ? 0 : (to.Row - from.Row) / rowDiff;
+            int colStep = colDiff == 0 ? 0 : (to.Col - from.Col) / colDiff;
 
             int currentRow = from.Row + rowStep;
             int currentCol = from.Col + colStep;

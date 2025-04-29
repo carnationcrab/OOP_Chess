@@ -6,19 +6,21 @@
     public class GameResult
     {
         /// <summary>
-        /// Gets or sets whether the game is over
+        /// Properties
         /// </summary>
-        public bool IsGameOver { get; set; }
+        /// 
 
-        /// <summary>
-        /// Gets or sets the winner of the game
-        /// </summary>
-        public GameWinner Winner { get; set; }
+        public bool       IsGameOver   { get; set; }
+        public GameWinner Winner       { get; set; }
+        public string     Reason       { get; set; }
 
-        /// <summary>
-        /// Gets or sets the reason for the game ending
-        /// </summary>
-        public string Reason { get; set; }
+        // win conditions
+
+        public bool CurrentPlayerWon => Winner == GameWinner.CurrentPlayer;
+
+        public bool OpponentWon      => Winner == GameWinner.Opponent;
+
+        public bool IsDraw           => Winner == GameWinner.Draw;
 
         /// <summary>
         /// Creates a new game result
@@ -26,8 +28,8 @@
         public GameResult()
         {
             IsGameOver = false;
-            Winner = GameWinner.None;
-            Reason = null;
+            Winner     = GameWinner.None;
+            Reason     = null;
         }
     }
 }

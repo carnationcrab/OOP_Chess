@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OOP_Chess
+namespace OOP_Chess.Game
 {
     /// <summary>
     /// Represents a chess game
@@ -13,11 +13,17 @@ namespace OOP_Chess
         public Board Board { get; private set; }
 
         /// <summary>
-        /// Creates a new chess game
+        /// Gets whether it's white's turn
         /// </summary>
-        public Game()
+        public bool IsWhiteTurn => Board.IsWhiteTurn;
+
+        /// <summary>
+        /// Creates a new chess game with the specified board
+        /// </summary>
+        /// <param name="board">The board to use</param>
+        public Game(Board board)
         {
-            Board = new Board();
+            Board = board ?? throw new ArgumentNullException(nameof(board));
         }
 
         /// <summary>

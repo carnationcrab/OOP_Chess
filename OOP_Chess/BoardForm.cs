@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using OOP_Chess.Game;
+using OOP_Chess.UI;
+using OOP_Chess.UI.Board;
 
 namespace OOP_Chess
 {
@@ -32,7 +35,9 @@ namespace OOP_Chess
 
         private void InitializeGameManager()
         {
-            gameManager = new GameManager();
+            var board = new Board();
+            gameManager = new GameManager(board);
+            board.SetGameManager(gameManager);
             gameManager.TurnChanged += UpdateTurnDisplay;
             gameManager.BoardChanged += RedrawBoard;
             gameManager.GameEnded += OnGameEnded;

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace OOP_Chess
+namespace OOP_Chess.UI
 {
     partial class CodeTreePanel
     {

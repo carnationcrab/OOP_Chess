@@ -1,6 +1,9 @@
 ﻿using System;
+using OOP_Chess.Pieces;
+using OOP_Chess.Game;
+using OOP_Chess.Game.Commands;
 
-namespace OOP_Chess
+namespace OOP_Chess.Game
 {
     /// <summary>
     /// Represents the chess board
@@ -9,7 +12,11 @@ namespace OOP_Chess
     {
         private Piece[,] grid = new Piece[8, 8];
         private readonly MoveCommandManager commandManager;
+        private OOP_Chess.Game.GameManager gameManager;
         private bool isWhiteTurn;
+
+        private Position whiteKingPosition;
+        private Position blackKingPosition;
 
         /// <summary>
         /// Creates a new chess board with standard initialization
@@ -23,25 +30,14 @@ namespace OOP_Chess
         }
 
         /// <summary>
-        /// Creates a new chess board with optional initialization
+        /// Sets the game manager for this board
         /// </summary>
-        /// <param name="initialize">Whether to initialize the board with standard setup</param>
-        public Board(bool initialize)
+        /// <param name="gameManager">The game manager to use</param>
+        public void SetGameManager(OOP_Chess.Game.GameManager gameManager)
         {
-            grid = new Piece[8, 8];
-            commandManager = new MoveCommandManager();
-            isWhiteTurn = true;
-            
-            if (initialize)
-            {
-                InitializeBoard();
-            }
+            this.gameManager = gameManager ?? throw new ArgumentNullException(nameof(gameManager));
         }
 
-        /// <summary>
-        /// Gets a snapshot of the current board state
-        /// </summary>
-        /// <returns>A 2D array representing the board state</returns>
         public Piece[,] GetBoardSnapshot()
         {
             var snapshot = new Piece[8, 8];
@@ -55,11 +51,6 @@ namespace OOP_Chess
             return snapshot;
         }
 
-        /// <summary>
-        /// Gets the piece at the specified position
-        /// </summary>
-        /// <param name="position">The position to check</param>
-        /// <returns>The piece at the position, or null if the position is empty</returns>
         public Piece GetPiece(Position position)
         {
             if (!IsValidPosition(position))
@@ -67,72 +58,61 @@ namespace OOP_Chess
             return grid[position.Row, position.Col];
         }
 
-        /// <summary>
-        /// Places a piece on the board at the specified position
-        /// </summary>
-        /// <param name="piece">The piece to place</param>
-        /// <param name="position">The position to place the piece</param>
         public void SetPiece(Position position, Piece piece)
         {
             if (!IsValidPosition(position))
                 throw new ArgumentException("Invalid position");
-            
+
             grid[position.Row, position.Col] = piece;
+
+            if (piece != null && piece.IsKing())
+            {
+                if (piece.IsWhite)
+                    whiteKingPosition = position;
+                else
+                    blackKingPosition = position;
+            }
         }
 
-        /// <summary>
-        /// Moves a piece from one position to another
-        /// </summary>
-        /// <param name="from">The starting position</param>
-        /// <param name="to">The target position</param>
         public void MovePiece(Position from, Position to)
         {
             if (!IsValidPosition(from) || !IsValidPosition(to))
                 throw new ArgumentException("Invalid position");
-            
+
+            var movingPiece = GetPiece(from);
+            var capturedPiece = GetPiece(to);
+
+            if (capturedPiece != null)
+            {
+                capturedPiece.Capture(gameManager);
+            }
+
+            if (movingPiece != null && movingPiece.IsKing())
+            {
+                if (movingPiece.IsWhite) whiteKingPosition = to;
+                else blackKingPosition = to;
+            }
+
             grid[to.Row, to.Col] = grid[from.Row, from.Col];
             grid[from.Row, from.Col] = null;
         }
 
-        /// <summary>
-        /// Attempts to move a piece from one position to another
-        /// </summary>
-        /// <param name="from">The starting position</param>
-        /// <param name="to">The target position</param>
-        /// <returns>True if the move was successful, false otherwise</returns>
         public bool TryMove(Position from, Position to)
         {
-            if (!IsValidPosition(from) || !IsValidPosition(to))
-                return false;
+            if (!IsValidPosition(from) || !IsValidPosition(to)) return false;
 
             var piece = GetPiece(from);
-            if (piece == null)
+            if (piece == null || piece.IsWhite != isWhiteTurn || !piece.IsValidMove(from, to, this))
                 return false;
 
-            // Check if it's the correct player's turn
-            if (piece.IsWhite != isWhiteTurn)
-                return false;
-
-            // Validate the move according to the piece's rules
-            if (!piece.IsValidMove(from, to, this))
-                return false;
-
-            // Store the captured piece (if any)
             var capturedPiece = GetPiece(to);
-
-            // Create and execute the move command
-            var command = new MoveCommand(this, from, to, capturedPiece);
+            var command = new MoveCommand(this, from, to, capturedPiece, gameManager);
             commandManager.ExecuteCommand(command);
-            
-            // Update turn
+
             isWhiteTurn = !isWhiteTurn;
             return true;
         }
 
-        /// <summary>
-        /// Undoes the last move
-        /// </summary>
-        /// <returns>True if a move was undone, false if there are no moves to undo</returns>
         public bool UndoMove()
         {
             if (commandManager.Undo())
@@ -143,10 +123,6 @@ namespace OOP_Chess
             return false;
         }
 
-        /// <summary>
-        /// Redoes the last undone move
-        /// </summary>
-        /// <returns>True if a move was redone, false if there are no moves to redo</returns>
         public bool RedoMove()
         {
             if (commandManager.Redo())
@@ -157,62 +133,48 @@ namespace OOP_Chess
             return false;
         }
 
-        /// <summary>
-        /// Initializes the board with the standard chess setup
-        /// </summary>
         public void InitializeBoard()
         {
-            // Clear the board
             grid = new Piece[8, 8];
             isWhiteTurn = true;
 
-            // Set pawns
             for (int col = 0; col < 8; col++)
             {
-                SetPiece(new Position(1, col), PieceFactory.CreatePiece(PieceType.Pawn, true));  // White pawns
-                SetPiece(new Position(6, col), PieceFactory.CreatePiece(PieceType.Pawn, false)); // Black pawns
+                SetPiece(new Position(1, col), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Pawn, true));
+                SetPiece(new Position(6, col), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Pawn, false));
             }
 
-            // Set rooks
-            SetPiece(new Position(0, 0), PieceFactory.CreatePiece(PieceType.Rook, true));
-            SetPiece(new Position(0, 7), PieceFactory.CreatePiece(PieceType.Rook, true));
-            SetPiece(new Position(7, 0), PieceFactory.CreatePiece(PieceType.Rook, false));
-            SetPiece(new Position(7, 7), PieceFactory.CreatePiece(PieceType.Rook, false));
+            SetPiece(new Position(0, 0), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Rook, true));
+            SetPiece(new Position(0, 7), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Rook, true));
+            SetPiece(new Position(7, 0), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Rook, false));
+            SetPiece(new Position(7, 7), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Rook, false));
 
-            // Set knights
-            SetPiece(new Position(0, 1), PieceFactory.CreatePiece(PieceType.Knight, true));
-            SetPiece(new Position(0, 6), PieceFactory.CreatePiece(PieceType.Knight, true));
-            SetPiece(new Position(7, 1), PieceFactory.CreatePiece(PieceType.Knight, false));
-            SetPiece(new Position(7, 6), PieceFactory.CreatePiece(PieceType.Knight, false));
+            SetPiece(new Position(0, 1), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Knight, true));
+            SetPiece(new Position(0, 6), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Knight, true));
+            SetPiece(new Position(7, 1), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Knight, false));
+            SetPiece(new Position(7, 6), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Knight, false));
 
-            // Set bishops
-            SetPiece(new Position(0, 2), PieceFactory.CreatePiece(PieceType.Bishop, true));
-            SetPiece(new Position(0, 5), PieceFactory.CreatePiece(PieceType.Bishop, true));
-            SetPiece(new Position(7, 2), PieceFactory.CreatePiece(PieceType.Bishop, false));
-            SetPiece(new Position(7, 5), PieceFactory.CreatePiece(PieceType.Bishop, false));
+            SetPiece(new Position(0, 2), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Bishop, true));
+            SetPiece(new Position(0, 5), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Bishop, true));
+            SetPiece(new Position(7, 2), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Bishop, false));
+            SetPiece(new Position(7, 5), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Bishop, false));
 
-            // Set queens
-            SetPiece(new Position(0, 3), PieceFactory.CreatePiece(PieceType.Queen, true));
-            SetPiece(new Position(7, 3), PieceFactory.CreatePiece(PieceType.Queen, false));
+            // White: Queen on d1 (white square), King on e1 (black square)
+            SetPiece(new Position(0, 3), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Queen, true));
+            SetPiece(new Position(0, 4), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.King, true));
 
-            // Set kings
-            SetPiece(new Position(0, 4), PieceFactory.CreatePiece(PieceType.King, true));
-            SetPiece(new Position(7, 4), PieceFactory.CreatePiece(PieceType.King, false));
+            // Black: King on d8 (black square), Queen on e8 (white square)
+            SetPiece(new Position(7, 3), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.King, false));
+            SetPiece(new Position(7, 4), OOP_Chess.Pieces.PieceFactory.CreatePiece(PieceType.Queen, false));
 
-            // Clear the command history
             commandManager.Clear();
         }
 
-        /// <summary>
-        /// Gets whether it is white's turn
-        /// </summary>
         public bool IsWhiteTurn => isWhiteTurn;
 
-        /// <summary>
-        /// Checks if a position is valid on the board
-        /// </summary>
-        /// <param name="position">The position to check</param>
-        /// <returns>True if the position is valid, false otherwise</returns>
+        public Position WhiteKingPosition => whiteKingPosition;
+        public Position BlackKingPosition => blackKingPosition;
+
         private bool IsValidPosition(Position position)
         {
             return position.Row >= 0 && position.Row < 8 && position.Col >= 0 && position.Col < 8;

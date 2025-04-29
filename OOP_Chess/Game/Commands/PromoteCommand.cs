@@ -1,6 +1,8 @@
+using OOP_Chess.Pieces;
 using System;
+using OOP_Chess.Game;
 
-namespace OOP_Chess
+namespace OOP_Chess.Game.Commands
 {
     /// <summary>
     /// Command class for handling pawn promotion

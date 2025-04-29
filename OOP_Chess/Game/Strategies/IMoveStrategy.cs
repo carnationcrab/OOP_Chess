@@ -1,4 +1,6 @@
-namespace OOP_Chess
+using OOP_Chess.Game;
+
+namespace OOP_Chess.Game.Strategies
 {
     /// <summary>
     /// Interface for piece movement strategies

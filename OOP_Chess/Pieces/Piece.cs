@@ -1,35 +1,50 @@
 ﻿using System;
+using OOP_Chess.Game.Strategies;
+using OOP_Chess.Game;
 
-namespace OOP_Chess
+namespace OOP_Chess.Pieces
 {
     /// <summary>
     /// Represents a chess piece
     /// </summary>
     public class Piece
     {
+        /// <summary>
+        /// Properties
+        /// </summary>
+        /// 
+
         private readonly IMoveStrategy moveStrategy;
+        private readonly OOP_Chess.Game.Strategies.ICaptureStrategy captureStrategy;
+        private readonly PieceType     pieceType;
 
-        /// <summary>
-        /// Gets whether the piece is white
-        /// </summary>
-        public bool IsWhite { get; }
+        public bool   IsCaptured { get; private set; }
+        public bool   IsWhite    { get; }
+        public string Symbol     { get; } // icon for piece
 
-        /// <summary>
-        /// Gets the symbol representing this piece
-        /// </summary>
-        public string Symbol { get; }
-
-        /// <summary>
-        /// Creates a new chess piece
-        /// </summary>
-        /// <param name="isWhite">Whether the piece is white</param>
-        /// <param name="symbol">The symbol representing this piece</param>
-        /// <param name="moveStrategy">The strategy for validating moves</param>
-        public Piece(bool isWhite, string symbol, IMoveStrategy moveStrategy)
+        public Piece(bool isWhite, string symbol, IMoveStrategy moveStrategy, PieceType pieceType, OOP_Chess.Game.Strategies.ICaptureStrategy captureStrategy)
         {
-            IsWhite = isWhite;
-            Symbol = symbol;
-            this.moveStrategy = moveStrategy ?? throw new ArgumentNullException(nameof(moveStrategy));
+            this.IsWhite = isWhite;
+            this.Symbol = symbol;
+            this.moveStrategy = moveStrategy;
+            this.pieceType = pieceType;
+            this.captureStrategy = captureStrategy;
+            this.IsCaptured = false;
+        }
+
+        public void MarkAsCaptured()
+        {
+            this.IsCaptured = true;
+        }
+
+        public void Capture(OOP_Chess.Game.GameManager gameManager)
+        {
+            captureStrategy.Capture(this, gameManager);
+        }
+
+        public void Revive()
+        {
+            this.IsCaptured = false;
         }
 
         /// <summary>
@@ -41,6 +56,7 @@ namespace OOP_Chess
         /// <returns>True if the move is valid, false otherwise</returns>
         public bool IsValidMove(Position from, Position to, Board board)
         {
+            if (IsCaptured) return false;
             return moveStrategy.IsValidMove(from, to, board, IsWhite);
         }
 
@@ -49,5 +65,14 @@ namespace OOP_Chess
         /// </summary>
         /// <returns>The piece's symbol</returns>
         public override string ToString() => Symbol;
+
+        /// <summary>
+        /// Checks if this piece is a king
+        /// </summary>
+        /// <returns>True if this piece is a king, false otherwise</returns>
+        public bool IsKing()
+        {
+            return pieceType == PieceType.King;
+        }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using OOP_Chess.Game;
+using OOP_Chess.UI.Board;
 
-namespace OOP_Chess
+namespace OOP_Chess.UI
 {
     public partial class CodeTreePanel : Panel
     {

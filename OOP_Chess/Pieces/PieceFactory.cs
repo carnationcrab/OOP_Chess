@@ -1,6 +1,7 @@
 using System;
+using OOP_Chess.Game.Strategies;
 
-namespace OOP_Chess
+namespace OOP_Chess.Pieces
 {
     /// <summary>
     /// Factory class for creating chess pieces
@@ -15,20 +16,35 @@ namespace OOP_Chess
         /// <returns>A new chess piece</returns>
         public static Piece CreatePiece(PieceType pieceType, bool isWhite)
         {
+            IMoveStrategy moveStrategy;
+            ICaptureStrategy captureStrategy;
+
             switch (pieceType)
             {
                 case PieceType.Pawn:
-                    return new Piece(isWhite, isWhite ? "♙" : "♟", new PawnMoveStrategy());
+                    moveStrategy = new PawnMoveStrategy();
+                    captureStrategy = new NormalCaptureStrategy();
+                    return new Piece(isWhite, isWhite ? "♙" : "♟", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Rook:
-                    return new Piece(isWhite, isWhite ? "♖" : "♜", new RookMoveStrategy());
+                    moveStrategy = new RookMoveStrategy();
+                    captureStrategy = new NormalCaptureStrategy();
+                    return new Piece(isWhite, isWhite ? "♖" : "♜", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Knight:
-                    return new Piece(isWhite, isWhite ? "♘" : "♞", new KnightMoveStrategy());
+                    moveStrategy = new KnightMoveStrategy();
+                    captureStrategy = new NormalCaptureStrategy();
+                    return new Piece(isWhite, isWhite ? "♘" : "♞", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Bishop:
-                    return new Piece(isWhite, isWhite ? "♗" : "♝", new BishopMoveStrategy());
+                    moveStrategy = new BishopMoveStrategy();
+                    captureStrategy = new NormalCaptureStrategy();
+                    return new Piece(isWhite, isWhite ? "♗" : "♝", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Queen:
-                    return new Piece(isWhite, isWhite ? "♕" : "♛", new QueenMoveStrategy());
+                    moveStrategy = new QueenMoveStrategy();
+                    captureStrategy = new NormalCaptureStrategy();
+                    return new Piece(isWhite, isWhite ? "♕" : "♛", moveStrategy, pieceType, captureStrategy);
                 case PieceType.King:
-                    return new Piece(isWhite, isWhite ? "♔" : "♚", new KingMoveStrategy());
+                    moveStrategy = new KingMoveStrategy();
+                    captureStrategy = new KingCaptureStrategy();
+                    return new Piece(isWhite, isWhite ? "♔" : "♚", moveStrategy, pieceType, captureStrategy);
                 default:
                     throw new ArgumentException($"Unknown piece type: {pieceType}");
             }
