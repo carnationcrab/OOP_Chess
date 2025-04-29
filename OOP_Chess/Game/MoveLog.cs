@@ -6,10 +6,10 @@ namespace OOP_Chess.Game
 {
     public class MoveLog
     {
-        private List<MoveInfo> moves;
+        private        List<MoveInfo> moves;
         public event Action<MoveInfo> MoveAdded;
-        public event Action MoveUndone;
-        public event Action MoveRedone;
+        public event Action           MoveUndone;
+        public event Action           MoveRedone;
 
         public MoveLog()
         {
@@ -45,18 +45,18 @@ namespace OOP_Chess.Game
 
     public class MoveInfo
     {
-        public Position From { get; }
-        public Position To { get; }
-        public string PieceName { get; }
-        public bool IsWhite { get; }
-        public bool IsCapture { get; }
+        public Position From      { get; }
+        public Position To        { get; }
+        public string   PieceName { get; }
+        public bool     IsWhite   { get; }
+        public bool     IsCapture { get; }
 
         public MoveInfo(Position from, Position to, string pieceName, bool isWhite, bool isCapture)
         {
-            From = from;
-            To = to;
+            From      = from;
+            To        = to;
             PieceName = pieceName;
-            IsWhite = isWhite;
+            IsWhite   = isWhite;
             IsCapture = isCapture;
         }
 

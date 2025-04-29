@@ -25,11 +25,11 @@ namespace OOP_Chess.Game.Commands
         /// <param name="gameManager">The game manager instance</param>
         public MoveCommand(Board board, Position from, Position to, Piece capturedPiece, GameManager gameManager)
         {
-            this.board = board;
-            this.from = from;
-            this.to = to;
+            this.board         = board;
+            this.from          = from;
+            this.to            = to;
             this.capturedPiece = capturedPiece;
-            this.gameManager = gameManager ?? throw new ArgumentNullException(nameof(gameManager));
+            this.gameManager   = gameManager ?? throw new ArgumentNullException(nameof(gameManager));
         }
 
         /// <summary>

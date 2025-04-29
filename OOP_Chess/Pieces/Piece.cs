@@ -25,12 +25,12 @@ namespace OOP_Chess.Pieces
 
         public Piece(bool isWhite, string symbol, IMoveStrategy moveStrategy, PieceType pieceType, OOP_Chess.Game.Strategies.ICaptureStrategy captureStrategy)
         {
-            this.IsWhite = isWhite;
-            this.Symbol = symbol;
-            this.moveStrategy = moveStrategy;
-            this.pieceType = pieceType;
+            this.IsWhite         = isWhite;
+            this.Symbol          = symbol;
+            this.moveStrategy    = moveStrategy;
+            this.pieceType       = pieceType;
             this.captureStrategy = captureStrategy;
-            this.IsCaptured = false;
+            this.IsCaptured      = false;
         }
 
         public void MarkAsCaptured()
@@ -70,11 +70,11 @@ namespace OOP_Chess.Pieces
         /// <summary>
         /// Type checking methods for each piece type
         /// </summary>
-        public bool IsPawn() => pieceType == PieceType.Pawn;
-        public bool IsRook() => pieceType == PieceType.Rook;
+        public bool IsPawn()   => pieceType == PieceType.Pawn;
+        public bool IsRook()   => pieceType == PieceType.Rook;
         public bool IsKnight() => pieceType == PieceType.Knight;
         public bool IsBishop() => pieceType == PieceType.Bishop;
-        public bool IsQueen() => pieceType == PieceType.Queen;
-        public bool IsKing() => pieceType == PieceType.King;
+        public bool IsQueen()  => pieceType == PieceType.Queen;
+        public bool IsKing()   => pieceType == PieceType.King;
     }
 }

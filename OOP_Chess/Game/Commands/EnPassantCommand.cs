@@ -25,11 +25,11 @@ namespace OOP_Chess.Game.Commands
         /// <param name="capturedPawn">The captured pawn piece</param>
         public EnPassantCommand(Board board, Position pawnFrom, Position pawnTo, Position capturedPawnPosition, Piece capturedPawn)
         {
-            this.board = board;
-            this.pawnFrom = pawnFrom;
-            this.pawnTo = pawnTo;
+            this.board                = board;
+            this.pawnFrom             = pawnFrom;
+            this.pawnTo               = pawnTo;
             this.capturedPawnPosition = capturedPawnPosition;
-            this.capturedPawn = capturedPawn;
+            this.capturedPawn         = capturedPawn;
         }
 
         /// <summary>

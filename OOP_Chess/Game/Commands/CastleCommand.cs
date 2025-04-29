@@ -8,7 +8,7 @@ namespace OOP_Chess.Game.Commands
     /// </summary>
     public class CastleCommand : ICommand
     {
-        private readonly Board board;
+        private readonly Board    board;
         private readonly Position kingFrom;
         private readonly Position kingTo;
         private readonly Position rookFrom;
@@ -24,11 +24,11 @@ namespace OOP_Chess.Game.Commands
         /// <param name="rookTo">Target position of the rook</param>
         public CastleCommand(Board board, Position kingFrom, Position kingTo, Position rookFrom, Position rookTo)
         {
-            this.board = board;
+            this.board    = board;
             this.kingFrom = kingFrom;
-            this.kingTo = kingTo;
+            this.kingTo   = kingTo;
             this.rookFrom = rookFrom;
-            this.rookTo = rookTo;
+            this.rookTo   = rookTo;
         }
 
         /// <summary>

@@ -40,7 +40,7 @@ namespace OOP_Chess.Game.Strategies
             }
 
             // Check if target square is empty or contains an enemy piece
-            var targetPiece = board.GetPiece(to);
+            var    targetPiece = board.GetPiece(to);
             return targetPiece == null || targetPiece.IsWhite != isWhite;
         }
     }

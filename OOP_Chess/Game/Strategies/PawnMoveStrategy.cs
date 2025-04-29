@@ -39,7 +39,7 @@ namespace OOP_Chess.Game.Strategies
             // Diagonal capture
             else if (Math.Abs(from.Col - to.Col) == 1 && to.Row - from.Row == direction)
             {
-                var targetPiece = board.GetPiece(to);
+                var targetPiece  = board.GetPiece(to);
                 if (targetPiece != null && targetPiece.IsWhite != isWhite)
                     return true;
             }

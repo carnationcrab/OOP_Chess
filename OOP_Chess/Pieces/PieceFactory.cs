@@ -22,27 +22,27 @@ namespace OOP_Chess.Pieces
             switch (pieceType)
             {
                 case PieceType.Pawn:
-                    moveStrategy = new PawnMoveStrategy();
+                       moveStrategy = new PawnMoveStrategy();
                     captureStrategy = new NormalCaptureStrategy();
                     return new Piece(isWhite, isWhite ? "♙" : "♟", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Rook:
-                    moveStrategy = new RookMoveStrategy();
+                       moveStrategy = new RookMoveStrategy();
                     captureStrategy = new NormalCaptureStrategy();
                     return new Piece(isWhite, isWhite ? "♖" : "♜", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Knight:
-                    moveStrategy = new KnightMoveStrategy();
+                       moveStrategy = new KnightMoveStrategy();
                     captureStrategy = new NormalCaptureStrategy();
                     return new Piece(isWhite, isWhite ? "♘" : "♞", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Bishop:
-                    moveStrategy = new BishopMoveStrategy();
+                       moveStrategy = new BishopMoveStrategy();
                     captureStrategy = new NormalCaptureStrategy();
                     return new Piece(isWhite, isWhite ? "♗" : "♝", moveStrategy, pieceType, captureStrategy);
                 case PieceType.Queen:
-                    moveStrategy = new QueenMoveStrategy();
+                       moveStrategy = new QueenMoveStrategy();
                     captureStrategy = new NormalCaptureStrategy();
                     return new Piece(isWhite, isWhite ? "♕" : "♛", moveStrategy, pieceType, captureStrategy);
                 case PieceType.King:
-                    moveStrategy = new KingMoveStrategy();
+                       moveStrategy = new KingMoveStrategy();
                     captureStrategy = new KingCaptureStrategy();
                     return new Piece(isWhite, isWhite ? "♔" : "♚", moveStrategy, pieceType, captureStrategy);
                 default:

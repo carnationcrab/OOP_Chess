@@ -16,7 +16,7 @@ namespace OOP_Chess.Game.Strategies
         /// </summary>
         public QueenMoveStrategy()
         {
-            rookStrategy = new RookMoveStrategy();
+            rookStrategy   = new RookMoveStrategy();
             bishopStrategy = new BishopMoveStrategy();
         }
 
@@ -32,7 +32,7 @@ namespace OOP_Chess.Game.Strategies
         {
             // Queen can move like a rook or bishop
             return rookStrategy.IsValidMove(from, to, board, isWhite) ||
-                   bishopStrategy.IsValidMove(from, to, board, isWhite);
+                 bishopStrategy.IsValidMove(from, to, board, isWhite);
         }
     }
 } 
