@@ -6,123 +6,162 @@ namespace OOP_Chess
 {
     public class BoardPanel : Panel
     {
-        public const int SquareSize = 80;
-        private Button[,] buttons = new Button[8, 8];
-        private GameManager gameManager;
+        private readonly Button[,] squares;
+        private readonly GameManager gameManager;
+        private Position selectedPosition;
+        private bool hasSelectedPosition;
 
-        public event Action PositionSelected;
-
-        public Position SelectedPosition { get; private set; }
+        public event Action<Position> PositionSelected;
 
         public BoardPanel(GameManager gameManager)
         {
             this.gameManager = gameManager;
+            squares = new Button[BoardConfiguration.Dimensions.BoardSize, BoardConfiguration.Dimensions.BoardSize];
             InitializeBoard();
         }
 
         private void InitializeBoard()
         {
-            this.Size = new Size(SquareSize * 8, SquareSize * 8);
-            this.BackColor = Color.White;
+            this.Size = new Size(BoardConfiguration.Dimensions.TotalBoardSize, BoardConfiguration.Dimensions.TotalBoardSize);
+            this.BackColor = BoardConfiguration.Colors.Background;
 
-            for (int row = 0; row < 8; row++)
+            for (int row = 0; row < BoardConfiguration.Dimensions.BoardSize; row++)
             {
-                for (int col = 0; col < 8; col++)
+                for (int col = 0; col < BoardConfiguration.Dimensions.BoardSize; col++)
                 {
-                    var button = new Button();
-                    button.Size = new Size(SquareSize, SquareSize);
-                    button.Location = new Point(col * SquareSize, row * SquareSize);
-                    button.Tag = new Position(row, col);
-                    button.Font = new Font(FontFamily.GenericSansSerif, 24, FontStyle.Bold);
-                    button.BackColor = GetDefaultSquareColor(row, col);
-                    button.Click += Button_Click;
-                    buttons[row, col] = button;
-                    this.Controls.Add(button);
+                    squares[row, col] = CreateSquare(row, col);
+                    this.Controls.Add(squares[row, col]);
                 }
             }
+        }
+
+        private Button CreateSquare(int row, int col)
+        {
+            var button = new Button
+            {
+                Size = new Size(BoardConfiguration.Dimensions.SquareSize, BoardConfiguration.Dimensions.SquareSize),
+                Location = new Point(col * BoardConfiguration.Dimensions.SquareSize, row * BoardConfiguration.Dimensions.SquareSize),
+                Tag = new Position(row, col),
+                BackColor = GetDefaultSquareColor(row, col),
+                Font = BoardConfiguration.FontSettings.PieceFont
+            };
+            button.Click += Button_Click;
+            return button;
         }
 
         private void Button_Click(object sender, EventArgs e)
         {
-            var button = sender as Button;
-            var pos = (Position)button.Tag;
+            var button = (Button)sender;
+            var position = (Position)button.Tag;
+            var board = gameManager.GetBoardSnapshot();
+            var piece = board[position.Row, position.Col];
 
-            if (SelectedPosition == null)
+            if (!hasSelectedPosition)
             {
-                var snapshot = gameManager.GetBoardSnapshot();
-                var piece = snapshot[pos.Row, pos.Col];
-                if (piece != null && piece.IsWhite == gameManager.IsWhiteTurn)
-                {
-                    SelectedPosition = pos;
-                }
+                HandleFirstClick(position, piece, button);
             }
             else
             {
-                if (gameManager.TryMove(SelectedPosition, pos))
-                {
-                    SelectedPosition = null;
-                    DrawBoard();
-                }
-                else
-                {
-                    SelectedPosition = null;
-                }
+                HandleSecondClick(position, piece);
             }
+        }
 
-            PositionSelected?.Invoke();
+        private void HandleFirstClick(Position position, Piece piece, Button button)
+        {
+            if (piece != null && piece.IsWhite == gameManager.IsWhiteTurn)
+            {
+                selectedPosition = position;
+                hasSelectedPosition = true;
+                button.BackColor = BoardConfiguration.Colors.SelectedSquare;
+            }
+        }
+
+        private void HandleSecondClick(Position position, Piece piece)
+        {
+            if (gameManager.TryMove(selectedPosition, position))
+            {
+                ResetSelection();
+                DrawBoard();
+            }
+            else if (piece != null && piece.IsWhite == gameManager.IsWhiteTurn)
+            {
+                UpdateSelection(position);
+            }
+            else
+            {
+                ResetSelection();
+            }
+        }
+
+        private void ResetSelection()
+        {
+            squares[selectedPosition.Row, selectedPosition.Col].BackColor = GetDefaultSquareColor(selectedPosition.Row, selectedPosition.Col);
+            hasSelectedPosition = false;
+        }
+
+        private void UpdateSelection(Position newPosition)
+        {
+            squares[selectedPosition.Row, selectedPosition.Col].BackColor = GetDefaultSquareColor(selectedPosition.Row, selectedPosition.Col);
+            selectedPosition = newPosition;
+            squares[newPosition.Row, newPosition.Col].BackColor = BoardConfiguration.Colors.SelectedSquare;
         }
 
         public void DrawBoard()
         {
-            var snapshot = gameManager.GetBoardSnapshot();
-
-            for (int row = 0; row < 8; row++)
+            var board = gameManager.GetBoardSnapshot();
+            for (int row = 0; row < BoardConfiguration.Dimensions.BoardSize; row++)
             {
-                for (int col = 0; col < 8; col++)
+                for (int col = 0; col < BoardConfiguration.Dimensions.BoardSize; col++)
                 {
-                    var piece = snapshot[row, col];
-                    buttons[row, col].Text = piece?.GetSymbol() ?? "";
-                    buttons[row, col].BackColor = GetDefaultSquareColor(row, col);
+                    UpdateSquare(row, col, board[row, col]);
                 }
             }
         }
 
-        public void HighlightClass(string className)
+        private void UpdateSquare(int row, int col, Piece piece)
         {
-            var snapshot = gameManager.GetBoardSnapshot();
+            squares[row, col].Text = piece?.Symbol ?? "";
+            squares[row, col].BackColor = GetSquareColor(row, col);
+        }
 
-            for (int row = 0; row < 8; row++)
+        private Color GetSquareColor(int row, int col)
+        {
+            if (hasSelectedPosition && row == selectedPosition.Row && col == selectedPosition.Col)
             {
-                for (int col = 0; col < 8; col++)
-                {
-                    var button = buttons[row, col];
-                    var piece = snapshot[row, col];
-
-                    button.BackColor = GetDefaultSquareColor(row, col);
-
-                    if (className == "Board" || className == "Game")
-                    {
-                        button.BackColor = Color.LightPink;
-                    }
-                    else if (className == "Position")
-                    {
-                        button.BackColor = Color.MediumPurple;
-                    }
-                    else if (className == "Piece" && piece != null)
-                    {
-                        button.BackColor = Color.HotPink;
-                    }
-                    else if (piece != null && piece.GetType().Name == className)
-                    {
-                        button.BackColor = Color.HotPink;
-                    }
-                }
+                return BoardConfiguration.Colors.SelectedSquare;
             }
+            return GetDefaultSquareColor(row, col);
         }
 
         private Color GetDefaultSquareColor(int row, int col)
         {
-            return (row + col) % 2 == 0 ? Color.Beige : Color.Brown;
+            return (row + col) % 2 == 0 ? BoardConfiguration.Colors.LightSquare : BoardConfiguration.Colors.DarkSquare;
+        }
+
+        public void UpdateBoard()
+        {
+            DrawBoard();
+        }
+
+        public void HighlightClass(string className)
+        {
+            var board = gameManager.GetBoardSnapshot();
+            for (int row = 0; row < BoardConfiguration.Dimensions.BoardSize; row++)
+            {
+                for (int col = 0; col < BoardConfiguration.Dimensions.BoardSize; col++)
+                {
+                    var piece = board[row, col];
+                    if (piece != null && piece.GetType().Name == className)
+                    {
+                        squares[row, col].BackColor = BoardConfiguration.Colors.HighlightedSquare;
+                    }
+                    else
+                    {
+                        squares[row, col].BackColor = GetDefaultSquareColor(row, col);
+                    }
+                }
+            }
         }
     }
 }
+

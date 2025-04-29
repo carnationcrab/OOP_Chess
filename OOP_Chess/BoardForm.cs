@@ -28,12 +28,6 @@ namespace OOP_Chess
             turnLabel.Location = new Point(10, 10);
             turnLabel.Font = new Font(FontFamily.GenericSansSerif, 14, FontStyle.Bold);
             this.Controls.Add(turnLabel);
-
-            architecturePanel = new CodeTreePanel();
-            architecturePanel.Location = new Point(660, 50);
-            architecturePanel.Size = new Size(220, 600);
-            architecturePanel.OnClassSelected += OnClassSelected;
-            this.Controls.Add(architecturePanel);
         }
 
         private void InitializeGameManager()
@@ -41,11 +35,17 @@ namespace OOP_Chess
             gameManager = new GameManager();
             gameManager.TurnChanged += UpdateTurnDisplay;
             gameManager.BoardChanged += RedrawBoard;
-            gameManager.GameEnded += OnGameEnded; // 🔥 Hook up GameEnded
+            gameManager.GameEnded += OnGameEnded;
 
             boardPanel = new BoardPanel(gameManager);
             boardPanel.Location = new Point(10, 50);
             this.Controls.Add(boardPanel);
+
+            architecturePanel = new CodeTreePanel(gameManager, boardPanel);
+            architecturePanel.Location = new Point(660, 50);
+            architecturePanel.Size = new Size(220, 600);
+            architecturePanel.OnClassSelected += OnClassSelected;
+            this.Controls.Add(architecturePanel);
 
             RedrawBoard();
             UpdateTurnDisplay();
@@ -110,6 +110,5 @@ namespace OOP_Chess
             string message = $"{winnerText}\nReason: {result.Reason}";
             MessageBox.Show(message, "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
     }
 }

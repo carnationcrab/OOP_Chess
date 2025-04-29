@@ -1,33 +1,52 @@
-﻿using OOP_Chess;
+﻿using System;
 
 namespace OOP_Chess
 {
+    /// <summary>
+    /// Represents a chess game
+    /// </summary>
     public class Game
     {
+        /// <summary>
+        /// Gets the chess board
+        /// </summary>
         public Board Board { get; private set; }
-        public TurnManager TurnManager { get; private set; }
 
-
+        /// <summary>
+        /// Creates a new chess game
+        /// </summary>
         public Game()
         {
             Board = new Board();
-            Board.SetupInitialPosition();
-            TurnManager = new TurnManager();
         }
 
+        /// <summary>
+        /// Attempts to move a piece from one position to another
+        /// </summary>
+        /// <param name="from">The starting position</param>
+        /// <param name="to">The target position</param>
+        /// <returns>True if the move was successful, false otherwise</returns>
         public bool TryMove(Position from, Position to)
         {
-            var piece = Board.GetPiece(from);
-            if (piece == null) return false;
+            return Board.TryMove(from, to);
+        }
 
-            if (piece.IsValidMove(from, to, Board))
-            {
-                Board.MovePiece(from, to);
-                TurnManager.AdvanceTurn();
-                return true;
-            }
+        /// <summary>
+        /// Undoes the last move
+        /// </summary>
+        /// <returns>True if a move was undone, false if there are no moves to undo</returns>
+        public bool UndoMove()
+        {
+            return Board.UndoMove();
+        }
 
-            return false;
+        /// <summary>
+        /// Redoes the last undone move
+        /// </summary>
+        /// <returns>True if a move was redone, false if there are no moves to redo</returns>
+        public bool RedoMove()
+        {
+            return Board.RedoMove();
         }
     }
 }

@@ -46,10 +46,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Commands\CastleCommand.cs" />
+    <Compile Include="Game\Commands\EnPassantCommand.cs" />
+    <Compile Include="Game\Commands\ICommand.cs" />
+    <Compile Include="Game\Commands\IMoveCommand.cs" />
+    <Compile Include="Game\Commands\MoveCommand.cs" />
+    <Compile Include="Game\Commands\MoveCommandManager.cs" />
+    <Compile Include="Game\Commands\PromoteCommand.cs" />
     <Compile Include="Game\GameMananger.cs" />
     <Compile Include="Game\GameResult.cs" />
+    <Compile Include="Game\GameWinner.cs" />
+    <Compile Include="Game\Position.cs" />
+    <Compile Include="Game\Strategies\BishopMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\DiagonalMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\IMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\KingMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\KnightMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\PawnMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\QueenMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\RookMoveStrategy.cs" />
+    <Compile Include="Game\Strategies\StraightMoveStrategy.cs" />
     <Compile Include="Game\TurnManager.cs" />
-    <Compile Include="Pieces\Bishop.cs" />
+    <Compile Include="Pieces\PieceFactory.cs" />
     <Compile Include="UI\Board\Board.cs" />
     <Compile Include="BoardForm.cs">
       <SubType>Form</SubType>
@@ -58,24 +76,19 @@
       <DependentUpon>BoardForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Game\Game.cs" />
-    <Compile Include="Pieces\King.cs" />
-    <Compile Include="Pieces\Knight.cs" />
-    <Compile Include="Pieces\Pawn.cs" />
     <Compile Include="Pieces\Piece.cs" />
     <Compile Include="UI\Board\BoardPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\Board\Position.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Pieces\Queen.cs" />
-    <Compile Include="Pieces\Rook.cs" />
     <Compile Include="UI\CodeTreePanel.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\CodeTreePanel.Designer.cs">
       <DependentUpon>CodeTreePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\Board\BoardConfiguration.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

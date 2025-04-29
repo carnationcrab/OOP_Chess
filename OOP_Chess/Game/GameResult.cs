@@ -1,21 +1,33 @@
-﻿public enum GameWinner
+﻿namespace OOP_Chess
 {
-    None,
-    White,
-    Black,
-    Draw
-}
-
-public class GameResult
-{
-    public GameWinner Winner { get; set; }
-    public string Reason { get; set; } // optional: like "Checkmate", "Resignation", etc.
-
-    public bool IsGameOver => Winner != GameWinner.None;
-
-    public GameResult()
+    /// <summary>
+    /// Represents the result of a chess game
+    /// </summary>
+    public class GameResult
     {
-        Winner = GameWinner.None;
-        Reason = string.Empty;
+        /// <summary>
+        /// Gets or sets whether the game is over
+        /// </summary>
+        public bool IsGameOver { get; set; }
+
+        /// <summary>
+        /// Gets or sets the winner of the game
+        /// </summary>
+        public GameWinner Winner { get; set; }
+
+        /// <summary>
+        /// Gets or sets the reason for the game ending
+        /// </summary>
+        public string Reason { get; set; }
+
+        /// <summary>
+        /// Creates a new game result
+        /// </summary>
+        public GameResult()
+        {
+            IsGameOver = false;
+            Winner = GameWinner.None;
+            Reason = null;
+        }
     }
 }

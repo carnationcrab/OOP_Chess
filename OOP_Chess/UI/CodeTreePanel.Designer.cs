@@ -1,4 +1,6 @@
-﻿namespace OOP_Chess
+﻿using System.Windows.Forms;
+
+namespace OOP_Chess
 {
     partial class CodeTreePanel
     {
@@ -6,6 +8,8 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        public AutoScaleMode AutoScaleMode { get; private set; }
 
         /// <summary> 
         /// Clean up any resources being used.
