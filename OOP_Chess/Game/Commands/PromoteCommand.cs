@@ -32,9 +32,18 @@ namespace OOP_Chess.Game.Commands
         /// <summary>
         /// Executes the promote command
         /// </summary>
-        public void Execute()
+        /// <returns>True if the promotion was executed successfully, false otherwise</returns>
+        public bool Execute()
         {
-            board.SetPiece(position, promotedPiece);
+            try
+            {
+                board.SetPiece(position, promotedPiece);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -43,6 +52,15 @@ namespace OOP_Chess.Game.Commands
         public void Undo()
         {
             board.SetPiece(position, originalPiece);
+        }
+
+        /// <summary>
+        /// Redoes the promote command
+        /// </summary>
+        /// <returns>True if the promotion was redone successfully, false otherwise</returns>
+        public bool Redo()
+        {
+            return Execute();
         }
     }
 } 

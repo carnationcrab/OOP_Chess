@@ -35,10 +35,19 @@ namespace OOP_Chess.Game.Commands
         /// <summary>
         /// Executes the en passant command
         /// </summary>
-        public void Execute()
+        /// <returns>True if the en passant was executed successfully, false otherwise</returns>
+        public bool Execute()
         {
-            board.MovePiece(pawnFrom, pawnTo);
-            board.SetPiece(capturedPawnPosition, null);
+            try
+            {
+                board.MovePiece(pawnFrom, pawnTo);
+                board.SetPiece(capturedPawnPosition, null);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -48,6 +57,15 @@ namespace OOP_Chess.Game.Commands
         {
             board.MovePiece(pawnTo, pawnFrom);
             board.SetPiece(capturedPawnPosition, capturedPawn);
+        }
+
+        /// <summary>
+        /// Redoes the en passant command
+        /// </summary>
+        /// <returns>True if the en passant was redone successfully, false otherwise</returns>
+        public bool Redo()
+        {
+            return Execute();
         }
     }
 } 

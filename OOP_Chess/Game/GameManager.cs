@@ -11,16 +11,26 @@ namespace OOP_Chess.Game
     {
         private Board board;
         private Game currentGame;
+        private MoveLog moveLog;
         public GameResult CurrentResult { get; private set; }
         public event Action GameEnded;
         public event Action BoardChanged;
         public event Action TurnChanged;
+        public event Action<MoveInfo> MoveAdded;
+        public event Action MoveUndone;
+        public event Action MoveRedone;
 
         public GameManager(Board board)
         {
             this.board = board ?? throw new ArgumentNullException(nameof(board));
             this.currentGame = new Game(board);
+            this.moveLog = new MoveLog();
             CurrentResult = new GameResult();
+
+            // Subscribe to move log events
+            moveLog.MoveAdded += (move) => MoveAdded?.Invoke(move);
+            moveLog.MoveUndone += () => MoveUndone?.Invoke();
+            moveLog.MoveRedone += () => MoveRedone?.Invoke();
         }
 
         public Piece[,] GetBoardSnapshot()
@@ -248,6 +258,41 @@ namespace OOP_Chess.Game
                     GameEnded?.Invoke();
                 }
 
+                return true;
+            }
+            return false;
+        }
+
+        public void LogMove(Position from, Position to, Piece piece, bool isCapture)
+        {
+            var moveInfo = new MoveInfo(from, to, piece.GetType().Name, piece.IsWhite, isCapture);
+            moveLog.AddMove(moveInfo);
+        }
+
+        public IReadOnlyList<MoveInfo> GetMoveHistory()
+        {
+            return moveLog.GetMoves();
+        }
+
+        public bool UndoLastMove()
+        {
+            if (currentGame.UndoMove())
+            {
+                moveLog.OnMoveUndone();
+                BoardChanged?.Invoke();
+                TurnChanged?.Invoke();
+                return true;
+            }
+            return false;
+        }
+
+        public bool RedoLastMove()
+        {
+            if (currentGame.RedoMove())
+            {
+                moveLog.OnMoveRedone();
+                BoardChanged?.Invoke();
+                TurnChanged?.Invoke();
                 return true;
             }
             return false;

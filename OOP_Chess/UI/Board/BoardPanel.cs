@@ -3,6 +3,7 @@ using OOP_Chess.Game;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace OOP_Chess.UI.Board
 {
@@ -12,6 +13,8 @@ namespace OOP_Chess.UI.Board
         private readonly GameManager gameManager;
         private Position selectedPosition;
         private bool hasSelectedPosition;
+        private Position lastMoveFromHighlight;
+        private Position lastMoveToHighlight;
 
         public event Action<Position> PositionSelected;
 
@@ -82,6 +85,9 @@ namespace OOP_Chess.UI.Board
         {
             if (gameManager.TryMove(selectedPosition, position))
             {
+                // Update the highlight positions when a move is made
+                lastMoveFromHighlight = selectedPosition;
+                lastMoveToHighlight = position;
                 ResetSelection();
                 DrawBoard();
             }
@@ -130,7 +136,15 @@ namespace OOP_Chess.UI.Board
         {
             if (hasSelectedPosition && row == selectedPosition.Row && col == selectedPosition.Col)
             {
-                return BoardConfiguration.Colors.SelectedSquare;
+                return Color.Orange;
+            }
+            if (lastMoveFromHighlight != null && row == lastMoveFromHighlight.Row && col == lastMoveFromHighlight.Col)
+            {
+                return Color.Orange;
+            }
+            if (lastMoveToHighlight != null && row == lastMoveToHighlight.Row && col == lastMoveToHighlight.Col)
+            {
+                return Color.Yellow;
             }
             return GetDefaultSquareColor(row, col);
         }
@@ -163,6 +177,21 @@ namespace OOP_Chess.UI.Board
                     }
                 }
             }
+        }
+
+        public void HighlightMove(Position from, Position to)
+        {
+            // Update the highlight positions when viewing move history
+            lastMoveFromHighlight = from;
+            lastMoveToHighlight = to;
+            DrawBoard();
+        }
+
+        public void ClearHighlights()
+        {
+            lastMoveFromHighlight = null;
+            lastMoveToHighlight = null;
+            DrawBoard();
         }
     }
 }

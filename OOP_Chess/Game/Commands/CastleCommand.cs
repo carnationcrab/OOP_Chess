@@ -34,10 +34,19 @@ namespace OOP_Chess.Game.Commands
         /// <summary>
         /// Executes the castle command
         /// </summary>
-        public void Execute()
+        /// <returns>True if the castle was executed successfully, false otherwise</returns>
+        public bool Execute()
         {
-            board.MovePiece(kingFrom, kingTo);
-            board.MovePiece(rookFrom, rookTo);
+            try
+            {
+                board.MovePiece(kingFrom, kingTo);
+                board.MovePiece(rookFrom, rookTo);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -47,6 +56,15 @@ namespace OOP_Chess.Game.Commands
         {
             board.MovePiece(kingTo, kingFrom);
             board.MovePiece(rookTo, rookFrom);
+        }
+
+        /// <summary>
+        /// Redoes the castle command
+        /// </summary>
+        /// <returns>True if the castle was redone successfully, false otherwise</returns>
+        public bool Redo()
+        {
+            return Execute();
         }
     }
 } 

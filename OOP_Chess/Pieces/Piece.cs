@@ -16,11 +16,12 @@ namespace OOP_Chess.Pieces
 
         private readonly IMoveStrategy moveStrategy;
         private readonly OOP_Chess.Game.Strategies.ICaptureStrategy captureStrategy;
-        private readonly PieceType     pieceType;
+        private readonly PieceType pieceType;
 
         public bool   IsCaptured { get; private set; }
         public bool   IsWhite    { get; }
         public string Symbol     { get; } // icon for piece
+        public PieceType Type => pieceType;
 
         public Piece(bool isWhite, string symbol, IMoveStrategy moveStrategy, PieceType pieceType, OOP_Chess.Game.Strategies.ICaptureStrategy captureStrategy)
         {
@@ -67,12 +68,13 @@ namespace OOP_Chess.Pieces
         public override string ToString() => Symbol;
 
         /// <summary>
-        /// Checks if this piece is a king
+        /// Type checking methods for each piece type
         /// </summary>
-        /// <returns>True if this piece is a king, false otherwise</returns>
-        public bool IsKing()
-        {
-            return pieceType == PieceType.King;
-        }
+        public bool IsPawn() => pieceType == PieceType.Pawn;
+        public bool IsRook() => pieceType == PieceType.Rook;
+        public bool IsKnight() => pieceType == PieceType.Knight;
+        public bool IsBishop() => pieceType == PieceType.Bishop;
+        public bool IsQueen() => pieceType == PieceType.Queen;
+        public bool IsKing() => pieceType == PieceType.King;
     }
 }

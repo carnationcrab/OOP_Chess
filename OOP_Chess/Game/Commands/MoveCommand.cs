@@ -1,4 +1,5 @@
 using System;
+using OOP_Chess.Game;
 using OOP_Chess.Pieces;
 
 namespace OOP_Chess.Game.Commands
@@ -6,13 +7,12 @@ namespace OOP_Chess.Game.Commands
     /// <summary>
     /// Command class for moving pieces on the board
     /// </summary>
-    public class MoveCommand : ICommand
+    public class MoveCommand : IMoveCommand
     {
         private readonly Board board;
         private readonly Position from;
         private readonly Position to;
         private readonly Piece capturedPiece;
-        private readonly Piece movingPiece;
         private readonly GameManager gameManager;
 
         /// <summary>
@@ -29,21 +29,28 @@ namespace OOP_Chess.Game.Commands
             this.from = from;
             this.to = to;
             this.capturedPiece = capturedPiece;
-            this.movingPiece = board.GetPiece(from);
             this.gameManager = gameManager ?? throw new ArgumentNullException(nameof(gameManager));
         }
 
         /// <summary>
         /// Performs a move command
         /// </summary>
-        public void Execute()
+        /// <returns>True if the move was executed successfully, false otherwise</returns>
+        public bool Execute()
         {
-            if (capturedPiece != null)
+            try
             {
-                capturedPiece.Capture(gameManager);
+                var piece = board.GetPiece(from);
+                if (piece == null) return false;
+                
+                board.MovePiece(from, to);
+                gameManager.LogMove(from, to, piece, capturedPiece != null);
+                return true;
             }
-
-            board.MovePiece(from, to);
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -51,13 +58,22 @@ namespace OOP_Chess.Game.Commands
         /// </summary>
         public void Undo()
         {
-            board.MovePiece(to, from);
-
+            var piece = board.GetPiece(to);
+            board.SetPiece(from, piece);
+            board.SetPiece(to, capturedPiece);
             if (capturedPiece != null)
             {
                 capturedPiece.Revive();
-                board.SetPiece(to, capturedPiece);
             }
+        }
+
+        /// <summary>
+        /// Redoes the previously undone move
+        /// </summary>
+        /// <returns>True if the move was redone successfully, false otherwise</returns>
+        public bool Redo()
+        {
+            return Execute();
         }
     }
 } 

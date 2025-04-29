@@ -15,11 +15,16 @@ namespace OOP_Chess
         /// Executes a new command
         /// </summary>
         /// <param name="command">The command to execute</param>
-        public void ExecuteCommand(ICommand command)
+        /// <returns>True if the command was executed successfully, false otherwise</returns>
+        public bool ExecuteCommand(ICommand command)
         {
-            command.Execute();
-            undoStack.Push(command);
-            redoStack.Clear();
+            if (command.Execute())
+            {
+                undoStack.Push(command);
+                redoStack.Clear();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -47,9 +52,12 @@ namespace OOP_Chess
                 return false;
 
             var command = redoStack.Pop();
-            command.Execute();
-            undoStack.Push(command);
-            return true;
+            if (command.Redo())
+            {
+                undoStack.Push(command);
+                return true;
+            }
+            return false;
         }
 
         /// <summary>

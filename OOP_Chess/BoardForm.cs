@@ -60,17 +60,15 @@ namespace OOP_Chess
         {
             if (gameManager.IsWhiteTurn)
             {
-                boardPanel.BackColor = Color.White;
                 turnLabel.Text = "White's Turn";
-                turnLabel.BackColor = Color.Black;
-                turnLabel.ForeColor = Color.White;
+                turnLabel.BackColor = Color.White;
+                turnLabel.ForeColor = Color.Black;
             }
             else
             {
-                boardPanel.BackColor = Color.Black;
                 turnLabel.Text = "Black's Turn";
-                turnLabel.BackColor = Color.White;
-                turnLabel.ForeColor = Color.Black;
+                turnLabel.BackColor = Color.Black;
+                turnLabel.ForeColor = Color.White;
             }
         }
 
